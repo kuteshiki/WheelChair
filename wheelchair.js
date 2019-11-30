@@ -385,7 +385,7 @@ function cripple_window(_window) {
                     }
                 };
             });
-        })
+        }
     }
     
     const handler = {
