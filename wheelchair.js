@@ -1,6 +1,5 @@
-
 cripple_window(window.parent);
-function cripple_window(_window) 
+function cripple_window(_window) {
     if (!_window) {
         return;
     }
@@ -218,6 +217,8 @@ function cripple_window(_window)
                 inputs[SCOPE] = controls[mouseDownR];
             }
 
+
+
       // wip Antiaim/Spinbot (working)
       
     if(inputs[SCOPE] === 1) {
@@ -381,12 +382,12 @@ function cripple_window(_window)
           c.restore();
                         }
 
-                    }
+                                      }
                 };
-            });
+            };
         })
     }
-
+    
     const handler = {
         apply: function(target, _this, _arguments) {
             try {
