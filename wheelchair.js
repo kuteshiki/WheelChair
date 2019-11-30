@@ -386,7 +386,7 @@ function cripple_window(_window) {
                 };
             });
         }
-    }
+    // w
     const handler = {
         apply: function(target, _this, _arguments) {
             try {
