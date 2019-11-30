@@ -1,3 +1,17 @@
+// ==UserScript==
+// @name         Krunker WheelChair
+// @namespace    https://github.com/hrt
+// @version      1.9.0
+// @description  WheelChair
+// @author       hrt x ttap
+// @match        https://krunker.io/*
+// @run-at       document-start
+// @grant        none
+// ==/UserScript==
+
+// note:    this script gets injected into its own isolated context/iframe
+//          to console.log we would have to call window.top.console.log
+
 cripple_window(window.parent);
 function cripple_window(_window) {
     if (!_window) {
@@ -218,7 +232,6 @@ function cripple_window(_window) {
             }
 
 
-
       // wip Antiaim/Spinbot (working)
       
     if(inputs[SCOPE] === 1) {
@@ -232,7 +245,7 @@ function cripple_window(_window) {
    // if(e.)
     // infinite ammo
     me.ammos[me.weaponIndex] = 999;
-
+            
             // bhop
             inputs[JUMP] = (controls.keys[controls.jumpKey] && !me.didJump) * 1;
 
@@ -291,59 +304,43 @@ function cripple_window(_window) {
 
 
                         c.save();
-// save and restore these variables later so they got nothing on us
-          const original_strokeStyle = c.strokeStyle;
-          const original_lineWidth = c.lineWidth;
-          const original_font = c.font;
-          const original_fillStyle = c.fillStyle;
-          _window["color_main"] = "rgba(240, 255, 0, 1)";
-          const color_sec = "rgba(0, 0, 0, 1);";
-          // perfect box esp
-          c.lineWidth = 5;
-          c.strokeStyle = _window["color_main"];
+                        // save and restore these variables later so they got nothing on us
+                        const color_main = "rgba(240, 255, 0, 1)";
+                        const color_sec = "rgba(0, 0, 0, 1);";
+                        const original_strokeStyle = c.strokeStyle;
+                        const original_lineWidth = c.lineWidth;
+                        const original_font = c.font;
+                        const original_fillStyle = c.fillStyle;
 
-          let distanceScale = Math.max(
-            0.3,
-            1 -
-              getD3D(
-                worldPosition.x,
-                worldPosition.y,
-                worldPosition.z,
-                e.x,
-                e.y,
-                e.z
-              ) /
-                600
-          );
-          c.scale(distanceScale, distanceScale);
-          let xScale = scaledWidth / distanceScale;
-          let yScale = scaledHeight / distanceScale;
+                        // perfect box esp
+                        c.lineWidth = 5;
+                        c.strokeStyle = color_main;
 
-          c.beginPath();
-          ymin = yScale * (1 - ymin);
-          ymax = yScale * (1 - ymax);
-          xmin = xScale * xmin;
-          xmax = xScale * xmax;
-          c.moveTo(xmin, ymin);
-          c.lineTo(xmin, ymax);
-          c.lineTo(xmax, ymax);
-          c.lineTo(xmax, ymin);
-          c.lineTo(xmin, ymin);
-          c.stroke();
+                        let distanceScale = Math.max(.3, 1 - getD3D(worldPosition.x, worldPosition.y, worldPosition.z, e.x, e.y, e.z) / 600);
+                        c.scale(distanceScale, distanceScale);
+                        let xScale = scaledWidth / distanceScale;
+                        let yScale = scaledHeight / distanceScale;
 
-          // health bar
-          c.fillStyle = color_sec;
-          let barMaxHeight = ymax - ymin;
-          c.fillRect(xmin - 7, ymin, -10, barMaxHeight);
-          c.fillStyle = _window["color_main"];
-          c.fillRect(
-            xmin - 7,
-            ymin,
-            -10,
-            barMaxHeight * (e.health / e.maxHealth)
-          );
-          _window["test"] = e;
-          // info
+                        c.beginPath();
+                        ymin = yScale * (1 - ymin);
+                        ymax = yScale * (1 - ymax);
+                        xmin = xScale * xmin;
+                        xmax = xScale * xmax;
+                        c.moveTo(xmin, ymin);
+                        c.lineTo(xmin, ymax);
+                        c.lineTo(xmax, ymax);
+                        c.lineTo(xmax, ymin);
+                        c.lineTo(xmin, ymin);
+                        c.stroke();
+
+                        // health bar
+                        c.fillStyle = color_sec;
+                        let barMaxHeight = ymax - ymin;
+                        c.fillRect(xmin - 7, ymin, -10, barMaxHeight);
+                        c.fillStyle = color_main;
+                        c.fillRect(xmin - 7, ymin, -10, barMaxHeight * (e.health / e.maxHealth));
+
+ // info
           c.font = "60px Courier New";
           c.fillStyle = "white";
           c.strokeStyle = "black";
@@ -380,13 +377,13 @@ function cripple_window(_window) {
           c.font = original_font;
           c.fillStyle = original_fillStyle;
           c.restore();
-                        }
 
                     }
                 };
-            });
-        }
-    // w
+            };
+        })
+    }
+
     const handler = {
         apply: function(target, _this, _arguments) {
             try {
@@ -399,7 +396,6 @@ function cripple_window(_window) {
 
             if (_arguments.length == 2 && _arguments[1].length > parseInt("1337 ttap#4547")) {
                 let script = _arguments[1];
-
 
                 // note: this window is not the main window
                 window['canSee'] = script.match(/,this\['(\w+)'\]=function\(\w+,\w+,\w+,\w+,\w+\){if\(!\w+\)return!\w+;/)[1];
