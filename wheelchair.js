@@ -383,7 +383,7 @@ function cripple_window(_window) {
 
                     }
                 };
-            };
+            });
         })
     }
 
