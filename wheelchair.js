@@ -1,16 +1,3 @@
-// ==UserScript==
-// @name         Krunker WheelChair
-// @namespace    https://github.com/hrt
-// @version      1.9.0
-// @description  WheelChair
-// @author       hrt x ttap
-// @match        https://krunker.io/*
-// @run-at       document-start
-// @grant        none
-// ==/UserScript==
-
-// note:    this script gets injected into its own isolated context/iframe
-//          to console.log we would have to call window.top.console.log
 
 cripple_window(window.parent);
 function cripple_window(_window) {
@@ -231,13 +218,19 @@ function cripple_window(_window) {
                 inputs[SCOPE] = controls[mouseDownR];
             }
 
-
-            // silent aim
+      // wip Antiaim/Spinbot (working)
+      
+    if(inputs[SCOPE] === 1) {
             inputs[xDr] = +(tx % PI2).toFixed(3);
             inputs[yDr] = +(ty % PI2).toFixed(3);
+} else {
+  inputs[xDr] = -9;
+}
 
-            // auto reload
-            controls.keys[controls.reloadKey] = !haveAmmo() * 1;
+
+   // if(e.)
+    // infinite ammo
+    me.ammos[me.weaponIndex] = 999;
 
             // bhop
             inputs[JUMP] = (controls.keys[controls.jumpKey] && !me.didJump) * 1;
@@ -297,72 +290,95 @@ function cripple_window(_window) {
 
 
                         c.save();
-                        // save and restore these variables later so they got nothing on us
-                        const original_strokeStyle = c.strokeStyle;
-                        const original_lineWidth = c.lineWidth;
-                        const original_font = c.font;
-                        const original_fillStyle = c.fillStyle;
+// save and restore these variables later so they got nothing on us
+          const original_strokeStyle = c.strokeStyle;
+          const original_lineWidth = c.lineWidth;
+          const original_font = c.font;
+          const original_fillStyle = c.fillStyle;
+          window["color_main"] = "rgba(240, 255, 0, 1)";
+          const color_sec = "rgba(0, 0, 0, 1);";
+          // perfect box esp
+          c.lineWidth = 5;
+          c.strokeStyle = window["color_main"];
 
-                        // perfect box esp
-                        c.lineWidth = 5;
-                        c.strokeStyle = 'rgba(255,50,50,1)';
+          let distanceScale = Math.max(
+            0.3,
+            1 -
+              getD3D(
+                worldPosition.x,
+                worldPosition.y,
+                worldPosition.z,
+                e.x,
+                e.y,
+                e.z
+              ) /
+                600
+          );
+          c.scale(distanceScale, distanceScale);
+          let xScale = scaledWidth / distanceScale;
+          let yScale = scaledHeight / distanceScale;
 
-                        let distanceScale = Math.max(.3, 1 - getD3D(worldPosition.x, worldPosition.y, worldPosition.z, e.x, e.y, e.z) / 600);
-                        c.scale(distanceScale, distanceScale);
-                        let xScale = scaledWidth / distanceScale;
-                        let yScale = scaledHeight / distanceScale;
+          c.beginPath();
+          ymin = yScale * (1 - ymin);
+          ymax = yScale * (1 - ymax);
+          xmin = xScale * xmin;
+          xmax = xScale * xmax;
+          c.moveTo(xmin, ymin);
+          c.lineTo(xmin, ymax);
+          c.lineTo(xmax, ymax);
+          c.lineTo(xmax, ymin);
+          c.lineTo(xmin, ymin);
+          c.stroke();
 
-                        c.beginPath();
-                        ymin = yScale * (1 - ymin);
-                        ymax = yScale * (1 - ymax);
-                        xmin = xScale * xmin;
-                        xmax = xScale * xmax;
-                        c.moveTo(xmin, ymin);
-                        c.lineTo(xmin, ymax);
-                        c.lineTo(xmax, ymax);
-                        c.lineTo(xmax, ymin);
-                        c.lineTo(xmin, ymin);
-                        c.stroke();
+          // health bar
+          c.fillStyle = color_sec;
+          let barMaxHeight = ymax - ymin;
+          c.fillRect(xmin - 7, ymin, -10, barMaxHeight);
+          c.fillStyle = window["color_main"];
+          c.fillRect(
+            xmin - 7,
+            ymin,
+            -10,
+            barMaxHeight * (e.health / e.maxHealth)
+          );
+          window["test"] = e;
+          // info
+          c.font = "60px Courier New";
+          c.fillStyle = "white";
+          c.strokeStyle = "black";
+          c.lineWidth = 1;
+          let x = xmax + 7;
+          let y = ymax;
+          if (e.clan) {
+            c.fillText(`${e.name} [${e.clan}]`, x, y);
+            c.strokeText(`${e.name} [${e.clan}]`, x, y);
+            c.font = "30px Courier New";
+          } else {
+            c.fillText(`${e.name}`, x, y);
+            c.strokeText(`${e.name}`, x, y);
+            c.font = "30px Courier New";
+          }
+          y += 35;
+          c.fillText(e.weapon.name, x, y);
+          c.strokeText(e.weapon.name, x, y);
+          if (e.weapon.ammo) {
+            y += 35;
+            c.fillText(`Ammo: ${e.weapon.ammo}`, x, y);
+            c.strokeText(`Ammo: ${e.weapon.ammo}`, x, y);
+          }
 
-                        // health bar
-                        c.fillStyle = "rgba(255,50,50,1)";
-                        let barMaxHeight = ymax - ymin;
-                        c.fillRect(xmin - 7, ymin, -10, barMaxHeight);
-                        c.fillStyle = "#00FFFF";
-                        c.fillRect(xmin - 7, ymin, -10, barMaxHeight * (e.health / e.maxHealth));
+          if (e.isHacker) {
+            y += 35;
+            c.fillText("HACKER!", x, y);
+            c.strokeText("HACKER!", x, y);
+          }
+          //window["test"].weapon.ammo
 
-                        // info
-                        c.font = "60px Sans-serif";
-                        c.fillStyle = "white";
-                        c.strokeStyle='black';
-                        c.lineWidth = 1;
-                        let x = xmax + 7;
-                        let y = ymax;
-                        c.fillText(e.name, x, y);
-                        c.strokeText(e.name, x, y);
-                        c.font = "30px Sans-serif";
-                        y += 35;
-                        c.fillText(e.weapon.name, x, y);
-                        c.strokeText(e.weapon.name, x, y);
-                        y += 35;
-                        c.fillText(e.health + ' HP', x, y);
-                        c.strokeText(e.health + ' HP', x, y);
-
-                        c.strokeStyle = original_strokeStyle;
-                        c.lineWidth = original_lineWidth;
-                        c.font = original_font;
-                        c.fillStyle = original_fillStyle;
-                        c.restore();
-
-                        // skelly chams
-                        // note: this can be done better
-                        if (e.legMeshes[0]) {
-                            let material = e.legMeshes[0].material;
-                            material.alphaTest = 1;
-                            material.depthTest = false;
-                            material.fog = false;
-                            material.emissive.g = 1;
-                            material.wireframe = true;
+          c.strokeStyle = original_strokeStyle;
+          c.lineWidth = original_lineWidth;
+          c.font = original_font;
+          c.fillStyle = original_fillStyle;
+          c.restore();
                         }
 
                     }
@@ -384,12 +400,6 @@ function cripple_window(_window) {
             if (_arguments.length == 2 && _arguments[1].length > parseInt("1337 ttap#4547")) {
                 let script = _arguments[1];
 
-                // anti anti chet & anti skid
-                const version = script.match(/\w+\['exports'\]=(0[xX][0-9a-fA-F]+);/)[1];
-                if (version !== "0x17e87") {
-                    _window[atob('ZG9jdW1lbnQ=')][atob('d3JpdGU=')](atob('VmVyc2lvbiBtaXNzbWF0Y2gg') + version);
-                    _window[atob('bG9jYX'+'Rpb24'+'=')][atob('aHJ'+'lZg='+'=')] = atob('aHR0cHM6'+'Ly9naXRodWIuY2'+'9tL2hydC93aGVlb'+'GNoYWly');
-                }
 
                 // note: this window is not the main window
                 window['canSee'] = script.match(/,this\['(\w+)'\]=function\(\w+,\w+,\w+,\w+,\w+\){if\(!\w+\)return!\w+;/)[1];
