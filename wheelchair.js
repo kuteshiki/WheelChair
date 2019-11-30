@@ -1,6 +1,6 @@
 
 cripple_window(window.parent);
-function cripple_window(_window) {
+function cripple_window(_window) 
     if (!_window) {
         return;
     }
@@ -295,11 +295,11 @@ function cripple_window(_window) {
           const original_lineWidth = c.lineWidth;
           const original_font = c.font;
           const original_fillStyle = c.fillStyle;
-          window["color_main"] = "rgba(240, 255, 0, 1)";
+          _window["color_main"] = "rgba(240, 255, 0, 1)";
           const color_sec = "rgba(0, 0, 0, 1);";
           // perfect box esp
           c.lineWidth = 5;
-          c.strokeStyle = window["color_main"];
+          c.strokeStyle = _window["color_main"];
 
           let distanceScale = Math.max(
             0.3,
@@ -334,14 +334,14 @@ function cripple_window(_window) {
           c.fillStyle = color_sec;
           let barMaxHeight = ymax - ymin;
           c.fillRect(xmin - 7, ymin, -10, barMaxHeight);
-          c.fillStyle = window["color_main"];
+          c.fillStyle = _window["color_main"];
           c.fillRect(
             xmin - 7,
             ymin,
             -10,
             barMaxHeight * (e.health / e.maxHealth)
           );
-          window["test"] = e;
+          _window["test"] = e;
           // info
           c.font = "60px Courier New";
           c.fillStyle = "white";
